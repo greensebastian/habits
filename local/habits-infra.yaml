@@ -1,0 +1,28 @@
+name: habits-infra
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  pg-admin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+    ports:
+      - 82:80
+
+volumes:
+  pgdata:
+  pgadmindata:
