@@ -8,6 +8,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddHabitsApplication(this IServiceCollection services)
     {
+        services.AddDbContext<HabitsContext>();
         services.AddScoped<IHabitsRepository, HabitsRepository>();
         services.AddScoped<IHabitsApplication, HabitsApplication>();
         return services;

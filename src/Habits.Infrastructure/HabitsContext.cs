@@ -1,6 +1,5 @@
 ﻿using Habits.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 
 namespace Habits.Infrastructure;
