@@ -52,9 +52,13 @@ public class IntegrationTest : IClassFixture<IntegrationTestFixture>, IAsyncLife
             
             // Assert
             actual.Value.Data.Should().HaveCount(1);
-            actual.Value.Data[0].Id.Should().Be(createdDirection.Value.Id);
-            Guid.Parse(actual.Value.Data[0].Id).Should().NotBeEmpty().And.NotBe(Guid.Empty);
-            actual.Value.Data[0].Title.Should().Be("Title");
+            var actualDirection = actual.Value.Data[0];
+            actualDirection.Id.Should().Be(createdDirection.Value.Id);
+            Guid.Parse(actualDirection.Id).Should().NotBeEmpty().And.NotBe(Guid.Empty);
+            actualDirection.Title.Should().Be("Title");
+            actualDirection.Motivation.Should().Be("Motivation");
+            actualDirection.Start.Should().Be(executionTime.AddDays(-1));
+            actualDirection.End.Should().Be(executionTime.AddDays(1));
         });
     }
 
