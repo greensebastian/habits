@@ -13,4 +13,8 @@ public interface IHabitsRepository
     public Task<Habit> Add(Habit habit, CancellationToken? cancellationToken = default);
     
     public Task<PaginatedResponse<Habit>> GetHabitsByDirectionAndPeriod(string directionId, Period searchPeriod, PaginationQuery pagination, CancellationToken? cancellationToken = default);
+
+    public Task<LogEntry> Add(LogEntry logEntry, CancellationToken? cancellationToken = default);
+    
+    public Task<PaginatedResponse<LogEntry>> GetLogEntriesByHabitAndPeriod(string habitId, Period searchPeriod, PaginationQuery pagination, CancellationToken? cancellationToken = default);
 }

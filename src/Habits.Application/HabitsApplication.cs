@@ -14,12 +14,11 @@ public class HabitsApplication : IHabitsApplication
 
     public async Task<Result<UserProfile>> CreateUserProfile(CreateUserProfileCommand command, CancellationToken? cancellationToken = default)
     {
-        var userProfile = new UserProfile
+        return await _repository.Add(new UserProfile
         {
             Id = Guid.NewGuid().ToString("D"),
             Name = command.Name
-        };
-        return await _repository.Add(userProfile, cancellationToken);
+        }, cancellationToken);
     }
 
     public async Task<Result<UserProfile>> GetUserProfile(GetUserProfileQuery query, CancellationToken? cancellationToken = default)
@@ -71,13 +70,22 @@ public class HabitsApplication : IHabitsApplication
         return habits;
     }
 
-    public Task<Result<LogEntry>> CreateLogEntry(CreateLogEntryCommand command, CancellationToken? cancellationToken = default)
+    public async Task<Result<LogEntry>> CreateLogEntry(CreateLogEntryCommand command, CancellationToken? cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _repository.Add(new LogEntry
+        {
+            Id = Guid.NewGuid().ToString("D"),
+            Comment = command.Comment,
+            HabitId = command.HabitId,
+            PerformedAt = command.PerformedAt
+        });
     }
 
-    public Task<Result<PaginatedResponse<LogEntry>>> GetLogEntries(GetLogEntriesQuery query, CancellationToken? cancellationToken = default)
+    public async Task<Result<PaginatedResponse<LogEntry>>> GetLogEntries(GetLogEntriesQuery query, CancellationToken? cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var logEntries = await _repository.GetLogEntriesByHabitAndPeriod(query.HabitId, query.SearchPeriod,
+            query.Pagination, cancellationToken);
+
+        return logEntries;
     }
 }

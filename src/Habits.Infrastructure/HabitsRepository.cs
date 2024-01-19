@@ -41,7 +41,7 @@ public class HabitsRepository : IHabitsRepository
         var directions = _context.Directions
             .Where(d => d.UserProfileId == userProfileId)
             .Where(d => searchPeriod.Start <= d.End && d.Start <= searchPeriod.End)
-            .OrderByDescending(d => d.End);
+            .OrderBy(d => d.End);
 
         var totalCount = await directions.CountAsync();
         var paginatedDirections = await directions.Skip(pagination.Offset).Take(toTake).ToListAsync();
@@ -64,11 +64,34 @@ public class HabitsRepository : IHabitsRepository
         var directions = _context.Habits
             .Where(d => d.DirectionId == directionId)
             .Where(d => searchPeriod.Start <= d.End && d.Start <= searchPeriod.End)
-            .OrderByDescending(d => d.End);
+            .OrderBy(d => d.End);
 
         var totalCount = await directions.CountAsync();
         var paginatedHabits = await directions.Skip(pagination.Offset).Take(toTake).ToListAsync();
 
         return new PaginatedResponse<Habit>(paginatedHabits, new PaginationResponse(pagination.Offset, paginatedHabits.Count, totalCount));
+    }
+    
+    public async Task<LogEntry> Add(LogEntry logEntry, CancellationToken? cancellationToken = default)
+    {
+        await _context.AddAsync(logEntry);
+        await _context.SaveChangesAsync();
+        return logEntry;
+    }
+
+    public async Task<PaginatedResponse<LogEntry>> GetLogEntriesByHabitAndPeriod(string habitId, Period searchPeriod, PaginationQuery pagination,
+        CancellationToken? cancellationToken = default)
+    {
+        var toTake = Math.Min(pagination.Count, MaxCount);
+
+        var directions = _context.LogEntries
+            .Where(d => d.HabitId == habitId)
+            .Where(d => searchPeriod.Start <= d.PerformedAt && d.PerformedAt <= searchPeriod.End)
+            .OrderBy(d => d.PerformedAt);
+
+        var totalCount = await directions.CountAsync();
+        var paginatedLogEntries = await directions.Skip(pagination.Offset).Take(toTake).ToListAsync();
+
+        return new PaginatedResponse<LogEntry>(paginatedLogEntries, new PaginationResponse(pagination.Offset, paginatedLogEntries.Count, totalCount));
     }
 }

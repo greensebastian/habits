@@ -114,8 +114,10 @@ public class IntegrationTest : IClassFixture<IntegrationTestFixture>, IAsyncLife
                 new Period(activePeriod.Start.AddDays(-5), activePeriod.Start.AddDays(-1)), new PaginationQuery());
             var overlapStartQuery = new GetDirectionsQuery(userProfile.Id,
                 new Period(activePeriod.Start.AddDays(-1), activePeriod.Start.AddDays(1)), new PaginationQuery());
-            var coveredQuery = new GetDirectionsQuery(userProfile.Id,
+            var containedQuery = new GetDirectionsQuery(userProfile.Id,
                 new Period(activePeriod.Start.AddDays(1), activePeriod.End.AddDays(-1)), new PaginationQuery());
+            var coveredQuery = new GetDirectionsQuery(userProfile.Id,
+                new Period(activePeriod.Start.AddDays(-1), activePeriod.End.AddDays(1)), new PaginationQuery());
             var overlapEndQuery = new GetDirectionsQuery(userProfile.Id,
                 new Period(activePeriod.End.AddDays(-1), activePeriod.End.AddDays(1)), new PaginationQuery());
             var afterQuery = new GetDirectionsQuery(userProfile.Id,
@@ -128,7 +130,7 @@ public class IntegrationTest : IClassFixture<IntegrationTestFixture>, IAsyncLife
                 actual.Value.Data.Should().BeEmpty();
             }
 
-            foreach (var query in new[] { overlapStartQuery, coveredQuery, overlapEndQuery })
+            foreach (var query in new[] { overlapStartQuery, containedQuery, coveredQuery, overlapEndQuery })
             {
                 var actual = await sut.GetDirections(query);
                 actual.Value.Data.Should().ContainSingle();
@@ -169,6 +171,40 @@ public class IntegrationTest : IClassFixture<IntegrationTestFixture>, IAsyncLife
             actualHabit.DirectionId.Should().Be(direction.Id);
             actualHabit.Start.Should().Be(executionTime);
             actualHabit.End.Should().Be(executionTime.AddDays(10));
+        });
+    }
+    
+    [Fact]
+    public async Task Can_Create_LogEntry()
+    {
+        // Arrange
+        var executionTime = DateTimeOffset.Parse("2024-01-19T12:00:00Z");
+        var activePeriod = new Period(executionTime, executionTime.AddDays(10));
+        var userProfile = await _fixture.CreateUserProfile(new CreateUserProfileCommand("User"));
+        var direction =
+            await _fixture.CreateDirection(new CreateDirectionCommand(userProfile.Id, "Title", "Motivation",
+                activePeriod));
+        var habit = await _fixture.CreateHabit(new CreateHabitCommand(direction.Id, "Title", "Frequency",
+            activePeriod));
+        
+        await _fixture.WithScope(async services =>
+        {
+            // Arrange
+            var sut = services.GetRequiredService<IHabitsApplication>();
+            var createLogEntryCommand = new CreateLogEntryCommand(habit.Id, executionTime.AddDays(1), "Comment");
+            
+            // Act
+            var createdLogEntry = await sut.CreateLogEntry(createLogEntryCommand);
+            var actual = await sut.GetLogEntries(new GetLogEntriesQuery(habit.Id,
+                new Period(executionTime, executionTime.AddDays(2)), new PaginationQuery()));
+            
+            // Assert
+            actual.Value.Data.Should().HaveCount(1);
+            var actualLogEntry = actual.Value.Data[0];
+            actualLogEntry.Id.Should().Be(createdLogEntry.Value.Id);
+            Guid.Parse(actualLogEntry.Id).Should().NotBeEmpty().And.NotBe(Guid.Empty);
+            actualLogEntry.Comment.Should().Be("Comment");
+            actualLogEntry.PerformedAt.Should().Be(executionTime.AddDays(1));
         });
     }
 

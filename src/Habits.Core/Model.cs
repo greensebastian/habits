@@ -17,8 +17,6 @@ public record PaginationQuery(int Offset = 0, int Count = 10);
 
 public record PaginatedQuery(PaginationQuery Pagination);
 
-public record Response<TData>(TData Data);
-
 public record PaginationResponse(int Offset, int Count, int TotalCount);
 
 public record PaginatedResponse<TData>(IList<TData> Data, PaginationResponse Pagination);
@@ -71,10 +69,10 @@ public class LogEntry
     public required string HabitId { get; init; }
     
     public DateTimeOffset PerformedAt { get; init; }
-    
-    public string? Comment { get; }
+
+    public required string? Comment { get; init; } = null;
 }
 
 public record CreateLogEntryCommand(string HabitId, DateTimeOffset PerformedAt, string? Comment = null);
 
-public record GetLogEntriesQuery(string UserProfileId, Period SearchPeriod, IEnumerable<string>? DirectionIds = null, IEnumerable<string>? HabitIds = null);
+public record GetLogEntriesQuery(string HabitId, Period SearchPeriod, PaginationQuery Pagination) : PaginatedQuery(Pagination);

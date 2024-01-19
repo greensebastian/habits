@@ -2,20 +2,35 @@ syntax = "proto3";
 
 option csharp_namespace = "Habits.gRPC";
 
-package greet;
+package habits;
 
-// The greeting service definition.
-service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+service HabitsService {
+  rpc CreateProfile (CreateProfileRequest) returns (UserProfile);
+  rpc CreateDirection (CreateDirectionRequest) returns (Direction);
 }
 
-// The request message containing the user's name.
-message HelloRequest {
+message CreateProfileRequest {
   string name = 1;
 }
 
-// The response message containing the greetings.
-message HelloReply {
-  string message = 1;
+message UserProfile {
+  string id = 1;
+  string name = 2;
+}
+
+message CreateDirectionRequest {
+  string userProfileId = 1;
+  string title = 2;
+  string motivation = 3;
+  string start = 4;
+  string end = 5;
+}
+
+message Direction {
+  string id = 1;
+  string userProfileId = 2;
+  string title = 3;
+  string motivation = 4;
+  string start = 5;
+  string end = 6;
 }
