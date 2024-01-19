@@ -48,4 +48,27 @@ public class HabitsRepository : IHabitsRepository
 
         return new PaginatedResponse<Direction>(paginatedDirections, new PaginationResponse(pagination.Offset, paginatedDirections.Count, totalCount));
     }
+
+    public async Task<Habit> Add(Habit habit, CancellationToken? cancellationToken = default)
+    {
+        await _context.AddAsync(habit);
+        await _context.SaveChangesAsync();
+        return habit;
+    }
+
+    public async Task<PaginatedResponse<Habit>> GetHabitsByDirectionAndPeriod(string directionId, Period searchPeriod, PaginationQuery pagination,
+        CancellationToken? cancellationToken = default)
+    {
+        var toTake = Math.Min(pagination.Count, MaxCount);
+
+        var directions = _context.Habits
+            .Where(d => d.DirectionId == directionId)
+            .Where(d => searchPeriod.Start <= d.End && d.Start <= searchPeriod.End)
+            .OrderByDescending(d => d.End);
+
+        var totalCount = await directions.CountAsync();
+        var paginatedHabits = await directions.Skip(pagination.Offset).Take(toTake).ToListAsync();
+
+        return new PaginatedResponse<Habit>(paginatedHabits, new PaginationResponse(pagination.Offset, paginatedHabits.Count, totalCount));
+    }
 }

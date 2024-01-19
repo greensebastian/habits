@@ -50,14 +50,25 @@ public class HabitsApplication : IHabitsApplication
         return directions;
     }
 
-    public Task<Result<Habit>> CreateHabit(CreateHabitCommand command, CancellationToken? cancellationToken = default)
+    public async Task<Result<Habit>> CreateHabit(CreateHabitCommand command, CancellationToken? cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _repository.Add(new Habit
+        {
+            Id = Guid.NewGuid().ToString("D"),
+            Title = command.Title,
+            Frequency = command.Frequency,
+            DirectionId = command.DirectionId,
+            Start = command.ActivePeriod.Start,
+            End = command.ActivePeriod.End
+        }, cancellationToken);
     }
 
-    public Task<Result<PaginatedResponse<Habit>>> GetHabits(GetHabitsQuery query, CancellationToken? cancellationToken = default)
+    public async Task<Result<PaginatedResponse<Habit>>> GetHabits(GetHabitsQuery query, CancellationToken? cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var habits = await _repository.GetHabitsByDirectionAndPeriod(query.DirectionId, query.SearchPeriod,
+            query.Pagination, cancellationToken);
+
+        return habits;
     }
 
     public Task<Result<LogEntry>> CreateLogEntry(CreateLogEntryCommand command, CancellationToken? cancellationToken = default)

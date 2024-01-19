@@ -1,4 +1,5 @@
 using Habits.Application;
+using Habits.Core;
 using Habits.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.Memory;
@@ -61,6 +62,12 @@ public class IntegrationTestFixture : IAsyncLifetime
         await using var scope = TestHost.Services.CreateAsyncScope();
         await action(scope.ServiceProvider);
     }
+    
+    public async Task<T> WithScope<T>(Func<IServiceProvider, Task<T>> action)
+    {
+        await using var scope = TestHost.Services.CreateAsyncScope();
+        return await action(scope.ServiceProvider);
+    }
 
     public async Task Clean()
     {
@@ -76,6 +83,36 @@ public class IntegrationTestFixture : IAsyncLifetime
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+        });
+    }
+    
+    public async Task<UserProfile> CreateUserProfile(CreateUserProfileCommand command)
+    {
+        return await WithScope(async services =>
+        {
+            var sut = services.GetRequiredService<IHabitsApplication>();
+            var created = await sut.CreateUserProfile(command);
+            return created.Value;
+        });
+    }
+    
+    public async Task<Direction> CreateDirection(CreateDirectionCommand command)
+    {
+        return await WithScope(async services =>
+        {
+            var sut = services.GetRequiredService<IHabitsApplication>();
+            var created = await sut.CreateDirection(command);
+            return created.Value;
+        });
+    }
+    
+    public async Task<Habit> CreateHabit(CreateHabitCommand command)
+    {
+        return await WithScope(async services =>
+        {
+            var sut = services.GetRequiredService<IHabitsApplication>();
+            var created = await sut.CreateHabit(command);
+            return created.Value;
         });
     }
 }

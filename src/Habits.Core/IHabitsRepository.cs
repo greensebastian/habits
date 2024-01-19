@@ -9,4 +9,8 @@ public interface IHabitsRepository
     public Task<Direction> Add(Direction direction, CancellationToken? cancellationToken = default);
 
     public Task<PaginatedResponse<Direction>> GetDirectionsByProfileAndPeriod(string userProfileId, Period searchPeriod, PaginationQuery pagination, CancellationToken? cancellationToken = default);
+    
+    public Task<Habit> Add(Habit habit, CancellationToken? cancellationToken = default);
+    
+    public Task<PaginatedResponse<Habit>> GetHabitsByDirectionAndPeriod(string directionId, Period searchPeriod, PaginationQuery pagination, CancellationToken? cancellationToken = default);
 }

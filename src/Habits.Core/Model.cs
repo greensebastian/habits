@@ -59,7 +59,10 @@ public class Habit
 
 public record CreateHabitCommand(string DirectionId, string Title, string Frequency, Period ActivePeriod);
 
-public record GetHabitsQuery(string UserProfileId, Period SearchPeriod, IEnumerable<string>? DirectionIds = null);
+public record GetHabitsQuery(
+    string DirectionId,
+    Period SearchPeriod,
+    PaginationQuery Pagination) : PaginatedQuery(Pagination);
 
 public class LogEntry
 {
