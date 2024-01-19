@@ -27,8 +27,32 @@ public class HabitsContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserProfile>().HasKey(e => e.Id);
+        modelBuilder.Entity<UserProfile>()
+            .HasMany<Direction>()
+            .WithOne()
+            .HasForeignKey(e => e.UserProfileId)
+            .HasPrincipalKey(e => e.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Direction>().HasKey(e => e.Id);
+        modelBuilder.Entity<Direction>()
+            .HasMany<Habit>()
+            .WithOne()
+            .HasForeignKey(e => e.DirectionId)
+            .HasPrincipalKey(e => e.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Direction>().HasIndex(e => new { e.UserProfileId, e.Start, e.End });
+        
         modelBuilder.Entity<Habit>().HasKey(e => e.Id);
+        modelBuilder.Entity<Habit>()
+            .HasMany<LogEntry>()
+            .WithOne()
+            .HasForeignKey(e => e.HabitId)
+            .HasPrincipalKey(e => e.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Habit>().HasIndex(e => new { e.DirectionId, e.Start, e.End });
+        
         modelBuilder.Entity<LogEntry>().HasKey(e => e.Id);
+        modelBuilder.Entity<LogEntry>().HasIndex(e => new { e.HabitId, e.PerformedAt});
     }
 }

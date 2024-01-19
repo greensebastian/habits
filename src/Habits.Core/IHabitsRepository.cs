@@ -2,11 +2,11 @@
 
 public interface IHabitsRepository
 {
-    public Task<UserProfile> Add(UserProfile userProfile, CancellationToken? cancellationToken);
+    public Task<UserProfile> Add(UserProfile userProfile, CancellationToken? cancellationToken = default);
 
-    public Task<UserProfile?> GetUserProfileById(string userProfileId, CancellationToken? cancellationToken);
+    public Task<UserProfile?> GetUserProfileById(string userProfileId, CancellationToken? cancellationToken = default);
 
-    public Task<Direction> Add(Direction direction, CancellationToken? cancellationToken);
+    public Task<Direction> Add(Direction direction, CancellationToken? cancellationToken = default);
 
-    public Task<PaginatedResponse<Direction>> GetDirectionsByProfileAndPeriod(string userProfileId, Period searchPeriod, CancellationToken? cancellationToken);
+    public Task<PaginatedResponse<Direction>> GetDirectionsByProfileAndPeriod(string userProfileId, Period searchPeriod, PaginationQuery pagination, CancellationToken? cancellationToken = default);
 }

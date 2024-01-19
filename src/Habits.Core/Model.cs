@@ -4,16 +4,16 @@ public readonly record struct Period(DateTimeOffset Start, DateTimeOffset End);
 
 public class UserProfile
 {
-    public string Id { get; init; }
+    public required string Id { get; init; }
     
-    public string Name { get; init; }
+    public required string Name { get; init; }
 }
 
 public record CreateUserProfileCommand(string Name);
 
 public record GetUserProfileQuery(string UserProfileId);
 
-public record PaginationQuery(int Offset, int Count);
+public record PaginationQuery(int Offset = 0, int Count = 10);
 
 public record PaginatedQuery(PaginationQuery Pagination);
 
@@ -21,19 +21,21 @@ public record Response<TData>(TData Data);
 
 public record PaginationResponse(int Offset, int Count, int TotalCount);
 
-public record PaginatedResponse<TData>(IEnumerable<TData> Data, PaginationResponse Pagination);
+public record PaginatedResponse<TData>(IList<TData> Data, PaginationResponse Pagination);
 
 public class Direction
 {
-    public string Id { get; init; }
+    public required string Id { get; init; }
     
-    public string Title { get; init; }
+    public required string Title { get; init; }
     
-    public string Motivation { get; init; }
+    public required string Motivation { get; init; }
     
-    public DateTimeOffset Start { get; init; }
+    public required DateTimeOffset Start { get; init; }
     
-    public DateTimeOffset End { get; init; }
+    public required DateTimeOffset End { get; init; }
+    
+    public required string UserProfileId { get; init; }
 }
 
 public record CreateDirectionCommand(string UserProfileId, string Title, string Motivation, Period ActivePeriod);
@@ -42,15 +44,17 @@ public record GetDirectionsQuery(string UserProfileId, Period SearchPeriod, Pagi
 
 public class Habit
 {
-    public string Id { get; }
+    public required string Id { get; init; }
     
-    public string Title { get; }
+    public required string Title { get; init; }
     
-    public string Frequency { get; }
+    public required string Frequency { get; init; }
     
-    public DateTimeOffset Start { get; }
+    public DateTimeOffset Start { get; init; }
     
-    public DateTimeOffset End { get; }
+    public DateTimeOffset End { get; init; }
+    
+    public required string DirectionId { get; init; }
 }
 
 public record CreateHabitCommand(string DirectionId, string Title, string Frequency, Period ActivePeriod);
@@ -59,11 +63,11 @@ public record GetHabitsQuery(string UserProfileId, Period SearchPeriod, IEnumera
 
 public class LogEntry
 {
-    public string Id { get; }
+    public required string Id { get; init; }
     
-    public string HabitId { get; }
+    public required string HabitId { get; init; }
     
-    public DateTimeOffset PerformedAt { get; }
+    public DateTimeOffset PerformedAt { get; init; }
     
     public string? Comment { get; }
 }

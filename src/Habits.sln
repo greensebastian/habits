@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Habits.Core", "Habits.Core\Habits.Core.csproj", "{84B3D670-7C21-4E32-B858-351F4CD2667A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Habits.Application.Test", "Habits.Application.Test\Habits.Application.Test.csproj", "{02D4444E-2B62-4073-AF4D-A7C24A9F198F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Habits.Application", "Habits.Application\Habits.Application.csproj", "{2FBF1113-6D10-4BE8-A19C-0E375EC88B6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Habits.gRPC", "Habits.gRPC\Habits.gRPC.csproj", "{002E70EC-DEE4-4994-88BF-1DD680DFB31D}"
@@ -24,10 +22,6 @@ Global
 		{84B3D670-7C21-4E32-B858-351F4CD2667A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84B3D670-7C21-4E32-B858-351F4CD2667A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84B3D670-7C21-4E32-B858-351F4CD2667A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02D4444E-2B62-4073-AF4D-A7C24A9F198F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02D4444E-2B62-4073-AF4D-A7C24A9F198F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02D4444E-2B62-4073-AF4D-A7C24A9F198F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02D4444E-2B62-4073-AF4D-A7C24A9F198F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FBF1113-6D10-4BE8-A19C-0E375EC88B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FBF1113-6D10-4BE8-A19C-0E375EC88B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FBF1113-6D10-4BE8-A19C-0E375EC88B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU

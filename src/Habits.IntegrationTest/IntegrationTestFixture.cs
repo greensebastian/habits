@@ -8,7 +8,6 @@ using Testcontainers.PostgreSql;
 
 namespace Habits.IntegrationTest;
 
-[Collection(Collections.Integration)]
 public class IntegrationTestFixture : IAsyncLifetime
 {
     private const string PostgresUser = "postgres";
@@ -44,14 +43,39 @@ public class IntegrationTestFixture : IAsyncLifetime
         });
 
         TestHost = builder.Build();
-        
-        await using var scope = TestHost.Services.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<HabitsContext>();
-        await context.Database.MigrateAsync();
+
+        await WithScope(async services =>
+        {
+            var context = services.GetRequiredService<HabitsContext>();
+            await context.Database.MigrateAsync();
+        });
     }
 
     public async Task DisposeAsync()
     {
         await _postgreSqlContainer.DisposeAsync();
+    }
+    
+    public async Task WithScope(Func<IServiceProvider, Task> action)
+    {
+        await using var scope = TestHost.Services.CreateAsyncScope();
+        await action(scope.ServiceProvider);
+    }
+
+    public async Task Clean()
+    {
+        await WithScope(async services =>
+        {
+            var context = services.GetRequiredService<HabitsContext>();
+            var transaction = await context.Database.BeginTransactionAsync();
+
+            await context.LogEntries.ExecuteDeleteAsync();
+            await context.Habits.ExecuteDeleteAsync();
+            await context.Directions.ExecuteDeleteAsync();
+            await context.UserProfiles.ExecuteDeleteAsync();
+
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        });
     }
 }
