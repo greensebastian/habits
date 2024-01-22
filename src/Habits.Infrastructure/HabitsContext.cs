@@ -16,10 +16,10 @@ public class HabitsContext : DbContext
         ConnectionString = connString;
     }
     
-    public DbSet<UserProfile> UserProfiles { get; set; }
-    public DbSet<Direction> Directions { get; set; }
-    public DbSet<Habit> Habits { get; set; }
-    public DbSet<LogEntry> LogEntries { get; set; }
+    public DbSet<UserProfile> UserProfiles { get; init; }
+    public DbSet<Direction> Directions { get; init; }
+    public DbSet<Habit> Habits { get; init; }
+    public DbSet<LogEntry> LogEntries { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder.UseNpgsql(ConnectionString, builder => builder.MigrationsAssembly("Habits.Infrastructure.Migrations"));
