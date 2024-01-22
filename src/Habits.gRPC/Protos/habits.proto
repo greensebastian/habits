@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+option csharp_namespace = "Habits.gRPC";
+
+package habits;
+
+service HabitsService {
+  rpc CreateProfile (CreateProfileRequest) returns (UserProfile);
+  rpc GetUserProfile (GetUserProfileRequest) returns (UserProfile);
+  rpc CreateDirection (CreateDirectionRequest) returns (Direction);
+  rpc GetDirections (GetDirectionsRequest) returns (PaginatedDirections);
+  rpc CreateHabit (CreateHabitRequest) returns (Habit);
+  rpc GetHabits (GetHabitsRequest) returns (PaginatedHabits);
+  rpc CreateLogEntry (CreateLogEntryRequest) returns (LogEntry);
+  rpc GetLogEntries (GetLogEntriesRequest) returns (PaginatedLogEntries);
+}
+
+message CreateProfileRequest {
+  string name = 1;
+}
+
+message GetUserProfileRequest {
+  string id = 1;
+}
+
+message UserProfile {
+  string id = 1;
+  string name = 2;
+}
+
+message CreateDirectionRequest {
+  string userProfileId = 1;
+  string title = 2;
+  string motivation = 3;
+  Period activePeriod = 4;
+}
+
+message GetDirectionsRequest {
+  string userProfileId = 1;
+  Period searchPeriod = 2;
+  PaginationQuery pagination = 3;
+}
+
+message PaginatedDirections {
+  repeated Direction Data = 1;
+  PaginationResponse Pagination = 2;
+}
+
+message Direction {
+  string id = 1;
+  string userProfileId = 2;
+  string title = 3;
+  string motivation = 4;
+  Period activePeriod = 5;
+}
+
+message CreateHabitRequest {
+  string directionId = 1;
+  string title = 2;
+  string frequency = 3;
+  Period activePeriod = 4;
+}
+
+message GetHabitsRequest {
+  string directionId = 1;
+  Period searchPeriod = 2;
+  PaginationQuery pagination = 3;
+}
+
+message PaginatedHabits {
+  repeated Habit Data = 1;
+  PaginationResponse Pagination = 2;
+}
+
+message Habit {
+  string id = 1;
+  string title = 2;
+  string frequency = 3;
+  Period activePeriod = 4;
+  string directionId = 5;
+}
+
+message CreateLogEntryRequest {
+  string habitId = 1;
+  string performedAt = 2;
+  optional string comment = 3;
+}
+
+message GetLogEntriesRequest {
+  string habitId = 1;
+  Period searchPeriod = 2;
+  PaginationQuery pagination = 3;
+}
+
+message PaginatedLogEntries {
+  repeated LogEntry Data = 1;
+  PaginationResponse Pagination = 2;
+}
+
+message LogEntry {
+  string id = 1;
+  string habitId = 2;
+  string performedAt = 3;
+  optional string comment = 4;
+}
+
+message Period {
+  string start = 1;
+  string end = 2;
+}
+
+message PaginationQuery {
+  int32 offset = 1;
+  int32 count = 2;
+}
+
+message PaginationResponse {
+  int32 offset = 1;
+  int32 count = 2;
+  int32 totalCount = 3;
+}

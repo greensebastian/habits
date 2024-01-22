@@ -21,7 +21,14 @@ public record PaginationResponse(int Offset, int Count, int TotalCount);
 
 public record PaginatedResponse<TData>(IList<TData> Data, PaginationResponse Pagination);
 
-public class Direction
+public interface IActivePeriod
+{
+    public DateTimeOffset Start { get; }
+    
+    public DateTimeOffset End { get; }
+}
+
+public class Direction : IActivePeriod
 {
     public required string Id { get; init; }
     
@@ -40,7 +47,7 @@ public record CreateDirectionCommand(string UserProfileId, string Title, string 
 
 public record GetDirectionsQuery(string UserProfileId, Period SearchPeriod, PaginationQuery Pagination) : PaginatedQuery(Pagination);
 
-public class Habit
+public class Habit : IActivePeriod
 {
     public required string Id { get; init; }
     

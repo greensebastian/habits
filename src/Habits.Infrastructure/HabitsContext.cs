@@ -54,5 +54,17 @@ public class HabitsContext : DbContext
         
         modelBuilder.Entity<LogEntry>().HasKey(e => e.Id);
         modelBuilder.Entity<LogEntry>().HasIndex(e => new { e.HabitId, e.PerformedAt});
+
+        var dateTimeConverter = new DateTimeOffsetValueConverter();
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.PropertyInfo?.PropertyType == typeof(DateTimeOffset))
+                {
+                    property.SetValueConverter(dateTimeConverter);
+                }
+            }
+        }
     }
 }
