@@ -1,5 +1,15 @@
-name: habits-infra
+name: habits
 services:
+
+  app:
+    env_file: .env
+    restart: unless-stopped
+    build:
+      context: ./src
+      args:
+        - CONFIGURATION=Debug
+    ports:
+      - 8080:8080
 
   db:
     image: postgres
