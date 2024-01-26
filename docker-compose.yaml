@@ -32,6 +32,8 @@ services:
       - pgadmindata:/var/lib/pgadmin
     ports:
       - 82:80
+    profiles:
+      - db-admin
 
 volumes:
   pgdata:

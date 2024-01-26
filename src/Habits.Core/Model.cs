@@ -13,6 +13,8 @@ public record CreateUserProfileCommand(string Name);
 
 public record GetUserProfileQuery(string UserProfileId);
 
+public record DeleteUserProfileCommand(string UserProfileId);
+
 public record PaginationQuery(int Offset = 0, int Count = 10);
 
 public record PaginatedQuery(PaginationQuery Pagination);

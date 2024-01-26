@@ -7,6 +7,8 @@ package habits;
 service HabitsService {
   rpc CreateProfile (CreateProfileRequest) returns (UserProfile);
   rpc GetUserProfile (GetUserProfileRequest) returns (UserProfile);
+  rpc GetAllUserProfiles (Empty) returns (PaginatedUserProfiles);
+  rpc DeleteUserProfile (DeleteUserProfileRequest) returns (Count);
   rpc CreateDirection (CreateDirectionRequest) returns (Direction);
   rpc GetDirections (GetDirectionsRequest) returns (PaginatedDirections);
   rpc CreateHabit (CreateHabitRequest) returns (Habit);
@@ -14,6 +16,8 @@ service HabitsService {
   rpc CreateLogEntry (CreateLogEntryRequest) returns (LogEntry);
   rpc GetLogEntries (GetLogEntriesRequest) returns (PaginatedLogEntries);
 }
+
+message Empty { }
 
 message CreateProfileRequest {
   string name = 1;
@@ -28,11 +32,24 @@ message UserProfile {
   string name = 2;
 }
 
+message PaginatedUserProfiles {
+  repeated UserProfile Data = 1;
+  PaginationResponse Pagination = 2;
+}
+
 message CreateDirectionRequest {
   string userProfileId = 1;
   string title = 2;
   string motivation = 3;
   Period activePeriod = 4;
+}
+
+message DeleteUserProfileRequest {
+  string userProfileId = 1;
+}
+
+message Count {
+  int32 count = 1;
 }
 
 message GetDirectionsRequest {

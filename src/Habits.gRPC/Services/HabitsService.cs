@@ -16,21 +16,38 @@ public class HabitsService : gRPC.HabitsService.HabitsServiceBase
     {
         var command = new CreateUserProfileCommand(request.Name);
         var userProfile = await _application.CreateUserProfile(command);
-        return new UserProfile
-        {
-            Id = userProfile.Value.Id,
-            Name = userProfile.Value.Name
-        };
+        return DtoUserProfile(userProfile.Value);
     }
 
     public override async Task<UserProfile> GetUserProfile(GetUserProfileRequest request, ServerCallContext context)
     {
         var query = new GetUserProfileQuery(request.Id);
         var userProfile = await _application.GetUserProfile(query);
-        return new UserProfile
+        return DtoUserProfile(userProfile.Value);
+    }
+
+    public override async Task<PaginatedUserProfiles> GetAllUserProfiles(Empty request, ServerCallContext context)
+    {
+        var userProfiles = await _application.GetAllUserProfiles();
+        return new PaginatedUserProfiles
         {
-            Id = userProfile.Value.Id,
-            Name = userProfile.Value.Name
+            Data = { userProfiles.Value.Select(DtoUserProfile) },
+            Pagination = new PaginationResponse
+            {
+                Count = userProfiles.Value.Count,
+                Offset = 0,
+                TotalCount = userProfiles.Value.Count
+            }
+        };
+    }
+
+    public override async Task<Count> DeleteUserProfile(DeleteUserProfileRequest request, ServerCallContext context)
+    {
+        var command = new DeleteUserProfileCommand(request.UserProfileId);
+        var deletedCount = await _application.DeleteUserProfile(command);
+        return new Count
+        {
+            Count_ = deletedCount.Value
         };
     }
 
@@ -90,6 +107,15 @@ public class HabitsService : gRPC.HabitsService.HabitsServiceBase
         {
             Data = { logEntries.Value.Data.Select(DtoLogEntry) },
             Pagination = DtoPagination(logEntries.Value.Pagination)
+        };
+    }
+    
+    private static UserProfile DtoUserProfile(Core.UserProfile userProfile)
+    {
+        return new UserProfile
+        {
+            Id = userProfile.Id,
+            Name = userProfile.Name
         };
     }
 

@@ -12,7 +12,7 @@ public class HabitsApplication : IHabitsApplication
         _repository = repository;
     }
 
-    public async Task<Result<UserProfile>> CreateUserProfile(CreateUserProfileCommand command, CancellationToken? cancellationToken = default)
+    public async Task<Result<UserProfile>> CreateUserProfile(CreateUserProfileCommand command, CancellationToken cancellationToken = default)
     {
         return await _repository.Add(new UserProfile
         {
@@ -21,14 +21,28 @@ public class HabitsApplication : IHabitsApplication
         }, cancellationToken);
     }
 
-    public async Task<Result<UserProfile>> GetUserProfile(GetUserProfileQuery query, CancellationToken? cancellationToken = default)
+    public async Task<Result<UserProfile>> GetUserProfile(GetUserProfileQuery query, CancellationToken cancellationToken = default)
     {
         var userProfile = await _repository.GetUserProfileById(query.UserProfileId, cancellationToken);
 
         return userProfile ?? new Result<UserProfile>(new NotFoundException(typeof(UserProfile), query.UserProfileId));
     }
 
-    public async Task<Result<Direction>> CreateDirection(CreateDirectionCommand command, CancellationToken? cancellationToken = default)
+    public async Task<Result<IList<UserProfile>>> GetAllUserProfiles(CancellationToken cancellationToken = default)
+    {
+        var userProfiles = await _repository.GetAllUserProfiles(cancellationToken);
+
+        return Result.FromValue(userProfiles);
+    }
+
+    public async Task<Result<int>> DeleteUserProfile(DeleteUserProfileCommand command, CancellationToken cancellationToken = default)
+    {
+        var result = await _repository.DeleteUserProfileById(command.UserProfileId, cancellationToken);
+
+        return result;
+    }
+
+    public async Task<Result<Direction>> CreateDirection(CreateDirectionCommand command, CancellationToken cancellationToken = default)
     {
         return await _repository.Add(new Direction
         {
@@ -41,7 +55,7 @@ public class HabitsApplication : IHabitsApplication
         }, cancellationToken);
     }
 
-    public async Task<Result<PaginatedResponse<Direction>>> GetDirections(GetDirectionsQuery query, CancellationToken? cancellationToken = default)
+    public async Task<Result<PaginatedResponse<Direction>>> GetDirections(GetDirectionsQuery query, CancellationToken cancellationToken = default)
     {
         var directions =
             await _repository.GetDirectionsByProfileAndPeriod(query.UserProfileId, query.SearchPeriod, query.Pagination, cancellationToken);
@@ -49,7 +63,7 @@ public class HabitsApplication : IHabitsApplication
         return directions;
     }
 
-    public async Task<Result<Habit>> CreateHabit(CreateHabitCommand command, CancellationToken? cancellationToken = default)
+    public async Task<Result<Habit>> CreateHabit(CreateHabitCommand command, CancellationToken cancellationToken = default)
     {
         return await _repository.Add(new Habit
         {
@@ -62,7 +76,7 @@ public class HabitsApplication : IHabitsApplication
         }, cancellationToken);
     }
 
-    public async Task<Result<PaginatedResponse<Habit>>> GetHabits(GetHabitsQuery query, CancellationToken? cancellationToken = default)
+    public async Task<Result<PaginatedResponse<Habit>>> GetHabits(GetHabitsQuery query, CancellationToken cancellationToken = default)
     {
         var habits = await _repository.GetHabitsByDirectionAndPeriod(query.DirectionId, query.SearchPeriod,
             query.Pagination, cancellationToken);
@@ -70,7 +84,7 @@ public class HabitsApplication : IHabitsApplication
         return habits;
     }
 
-    public async Task<Result<LogEntry>> CreateLogEntry(CreateLogEntryCommand command, CancellationToken? cancellationToken = default)
+    public async Task<Result<LogEntry>> CreateLogEntry(CreateLogEntryCommand command, CancellationToken cancellationToken = default)
     {
         return await _repository.Add(new LogEntry
         {
@@ -81,7 +95,7 @@ public class HabitsApplication : IHabitsApplication
         });
     }
 
-    public async Task<Result<PaginatedResponse<LogEntry>>> GetLogEntries(GetLogEntriesQuery query, CancellationToken? cancellationToken = default)
+    public async Task<Result<PaginatedResponse<LogEntry>>> GetLogEntries(GetLogEntriesQuery query, CancellationToken cancellationToken = default)
     {
         var logEntries = await _repository.GetLogEntriesByHabitAndPeriod(query.HabitId, query.SearchPeriod,
             query.Pagination, cancellationToken);
