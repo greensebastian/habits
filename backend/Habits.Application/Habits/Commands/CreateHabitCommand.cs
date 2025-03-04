@@ -17,6 +17,7 @@ public class CreateHabitHandler(TimeProvider timeProvider, IHabitsRepository hab
         var addResult = habitsRepository.Add(habit.Value);
         if (addResult.IsFailed) return addResult;
 
-        return await habitsRepository.Save(cancellationToken);
+        var save = await habitsRepository.Save(cancellationToken);
+        return save.IsSuccess ? habit : save;
     }
 }
