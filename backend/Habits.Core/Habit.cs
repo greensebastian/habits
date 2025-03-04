@@ -45,12 +45,3 @@ public class Habit
         return entry;
     }
 }
-
-public class LogEntry
-{
-    internal LogEntry(){}
-    
-    public required Guid Id { get; init; }
-    public required DateTimeOffset DoneAt { get; init; }
-    public string? Comment { get; init; }
-}
