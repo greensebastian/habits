@@ -24,6 +24,7 @@ public static class WebApplicationExtensions
         builder.Services.Configure<HabitsDbSettings>(builder.Configuration.GetSection("HabitsDb"));
         builder.Services.AddDbContext<HabitsDbContext>();
         builder.Services.AddScoped<IHabitsRepository, HabitsRepository>();
+        builder.Services.AddHostedService<HabitsDbContextMigrator>();
         return builder;
     }
 
